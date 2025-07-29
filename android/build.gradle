@@ -1,0 +1,37 @@
+buildscript {
+    ext {
+        buildToolsVersion = "35.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 35
+        targetSdkVersion = 35
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.1.20"
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven.pkg.jetbrains.space/public/p/compose/dev' }
+
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.4.1")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.20")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:2.1.20")
+        classpath("org.jetbrains.kotlin.compose:compose-gradle-plugin:1.5.11") // ✅ DÒNG QUAN TRỌNG
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
+        classpath("com.google.gms:google-services:4.4.0") // nếu bạn dùng Firebase
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" } // nếu có thư viện Telnyx hoặc GitHub
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
