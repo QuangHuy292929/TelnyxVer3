@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { NativeModules } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -25,7 +26,7 @@ type KeypadButtonType = {
 const KeypadScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [scaleAnim] = useState(new Animated.Value(1));
-
+  const { CallModule } =  NativeModules;
   useFocusEffect(
     useCallback(() => {
       // Khi vào lại màn hình thì reset
@@ -97,27 +98,27 @@ const KeypadScreen = () => {
 
   const handleCall = () => {
     if (phoneNumber.trim()) {
-
-      
       getContactByPhoneNumber(phoneNumber).then(contact => {
         if (contact) {
           console.log('Contact found:', contact);
           saveCallHistory(phoneNumber, contact.name, 'outgoing');
-          nav.navigate('Call', {
-            contactName: contact.name,
-            phoneNumber: phoneNumber,
-            isConnected: true,
-            callStatus: 'Đang gọi...',
-          });
+          // nav.navigate('Call', {
+          //   contactName: contact.name,
+          //   phoneNumber: phoneNumber,
+          //   isConnected: true,
+          //   callStatus: 'Đang gọi...',
+          // });
+          CallModule.startCall();
         } else {
           console.log('No contact found for:', phoneNumber);
           saveCallHistory(phoneNumber, "",'outgoing');
-          nav.navigate('Call', {
-            contactName: 'Không xác định',
-            phoneNumber: phoneNumber,
-            isConnected: false,
-            callStatus: 'Đang gọi...',
-          });
+          // nav.navigate('Call', {
+          //   contactName: 'Không xác định',
+          //   phoneNumber: phoneNumber,
+          //   isConnected: false,
+          //   callStatus: 'Đang gọi...',
+          // });
+          CallModule.startCall();
         }
       });
     }

@@ -1,6 +1,8 @@
 // D: \SipCallApp\screen\ContactDetailScreen.tsx
 
 import React, { useEffect, useState, useCallback } from "react";
+import { NativeModules } from 'react-native';
+
 import {
     View,
     Text,
@@ -9,6 +11,7 @@ import {
     ScrollView,
     Alert,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { RouteProp, useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ClientsStackParamList } from "./ClientsStack";
@@ -26,7 +29,7 @@ export default function ContactDetailScreen() {
     const route = useRoute<ContactDetailRouteProp>();
     const navigation = useNavigation<NavigationProp>();
     const [contact, setContact] = useState<Contact>(route.params.contact);
-
+    const { CallModule } =  NativeModules;
     
 
     // ✅ Reload lại contact mỗi khi quay lại màn
@@ -42,7 +45,7 @@ export default function ContactDetailScreen() {
     );
 
     const handleCall = () => {
-        console.log("Calling: " + contact.phone);
+        CallModule.startCall();
     };
 
     const handleVideo = () => {
@@ -76,66 +79,72 @@ export default function ContactDetailScreen() {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            {/* Nút quay lại */}
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                <Icon name="arrow-back" size={28} color="#000" />
-            </TouchableOpacity>
-
-            {/* Avatar + Tên  */}
-            <View style={styles.profileContainer}>
-                <View style={styles.avatarWrapper}>
-                    <Icon name="photo-camera" size={40} color="#888" />
-                </View>
-                <Text style={styles.name}>{contact.name}</Text>
-                
-            </View>
-
-            {/* Hành động: Gọi / Sửa / Video */}
-            <View style={styles.actionsRow}>
-                <TouchableOpacity style={styles.actionButton} onPress={handleCall}>
-                    <Icon name="call" size={28} color="#2196F3" />
+        <SafeAreaView style= {styles.safeare}>
+            <ScrollView style={styles.container}>
+                {/* Nút quay lại */}
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={28} color="#000" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.actionButton} onPress={handleEdit}>
-                    <Icon name="edit" size={28} color="#2196F3" />
+
+                {/* Avatar + Tên  */}
+                <View style={styles.profileContainer}>
+                    <View style={styles.avatarWrapper}>
+                        <Icon name="photo-camera" size={40} color="#888" />
+                    </View>
+                    <Text style={styles.name}>{contact.name}</Text>
+                    
+                </View>
+
+                {/* Hành động: Gọi / Sửa / Video */}
+                <View style={styles.actionsRow}>
+                    <TouchableOpacity style={styles.actionButton} onPress={handleCall}>
+                        <Icon name="call" size={28} color="#2196F3" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.actionButton} onPress={handleEdit}>
+                        <Icon name="edit" size={28} color="#2196F3" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.actionButton} onPress={handleVideo}>
+                        <Icon name="videocam" size={28} color="#2196F3" />
+                    </TouchableOpacity>
+                </View>
+
+                {/* Thông tin chi tiết */}
+                <View style={styles.infoBox}>
+                    <Text style={styles.infoLabel}>📞 Di động</Text>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoPhone}>{contact.phone}</Text>
+                    </View>
+                </View>
+
+                <View style={styles.infoBox}>
+                    <Text style={styles.infoLabel}>📧 Email</Text>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoPhone}>{contact.email || "Chưa cập nhật"}</Text>
+                    </View>
+                </View>
+
+                <View style={styles.infoBox}>
+                    <Text style={styles.infoLabel}>🏢 Công ty</Text>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoPhone}>{contact.company || "Chưa cập nhật"}</Text>
+                    </View>
+                </View>
+
+                {/* Nút Xóa liên hệ (placeholder) */}
+                <TouchableOpacity style={styles.removeButton} onPress={() => handleDelete(contact.id, contact.name)}
+                    activeOpacity={0.7}>
+                    <Text style={styles.editButtonText}>Xóa liên hệ</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.actionButton} onPress={handleVideo}>
-                    <Icon name="videocam" size={28} color="#2196F3" />
-                </TouchableOpacity>
-            </View>
-
-            {/* Thông tin chi tiết */}
-            <View style={styles.infoBox}>
-                <Text style={styles.infoLabel}>📞 Di động</Text>
-                <View style={styles.infoRow}>
-                    <Text style={styles.infoPhone}>{contact.phone}</Text>
-                </View>
-            </View>
-
-            <View style={styles.infoBox}>
-                <Text style={styles.infoLabel}>📧 Email</Text>
-                <View style={styles.infoRow}>
-                    <Text style={styles.infoPhone}>{contact.email || "Chưa cập nhật"}</Text>
-                </View>
-            </View>
-
-            <View style={styles.infoBox}>
-                <Text style={styles.infoLabel}>🏢 Công ty</Text>
-                <View style={styles.infoRow}>
-                    <Text style={styles.infoPhone}>{contact.company || "Chưa cập nhật"}</Text>
-                </View>
-            </View>
-
-            {/* Nút Xóa liên hệ (placeholder) */}
-            <TouchableOpacity style={styles.removeButton} onPress={() => handleDelete(contact.id, contact.name)}
-                activeOpacity={0.7}>
-                <Text style={styles.editButtonText}>Xóa liên hệ</Text>
-            </TouchableOpacity>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    safeare : {
+        flex: 1,
+        backgroundColor: "#f9f9f9",
+    },
     container: {
         backgroundColor: "#f9f9f9",
         flex: 1,

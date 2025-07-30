@@ -1,32 +1,17 @@
-//D:\TelnyxVer3\android\app\build.gradle
-
-import java.util.Properties
-import java.io.FileInputStream
-
 plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
-    //id "org.jetbrains.compose"
     id "org.jetbrains.kotlin.plugin.compose"
     id "org.jetbrains.kotlin.plugin.serialization"
     id "com.facebook.react"
     id "com.google.gms.google-services"
 }
 
-/**
- * This is the configuration block to customize your React Native Android app.
- * By default you don't need to apply any configuration, just uncomment the lines you need.
- */
 react {
-    
     autolinkLibrariesWithApp()
 }
 
-/**
- * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
- */
 def enableProguardInReleaseBuilds = false
-
 
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
@@ -43,15 +28,16 @@ android {
         versionCode 1
         versionName "1.0"
 
-
         def properties = new Properties()
         def localPropertiesFile = file("${rootDir}/local.properties")
 
         if (localPropertiesFile.exists()) {
-            new FileInputStream(localPropertiesFile).withCloseable { input ->
-                properties.load(input)
-            }
+            properties.load(new FileInputStream(localPropertiesFile))
         }
+
+        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", "false" // Tắt tạm thời
+        buildConfigField "boolean", "IS_HERMES_ENABLED", "true" // Tùy chỉnh theo nhu cầu
+        buildConfigField "boolean", "IS_FABRIC_ENABLED", "false"
 
         buildConfigField "String", "TEST_SIP_USERNAME", "\"${properties.getProperty('TEST_SIP_USERNAME', 'default_username')}\""
         buildConfigField "String", "TEST_SIP_PASSWORD", "\"${properties.getProperty('TEST_SIP_PASSWORD', 'default_password')}\""
@@ -59,6 +45,7 @@ android {
         buildConfigField "String", "TEST_SIP_CALLER_NUMBER", "\"${properties.getProperty('TEST_SIP_CALLER_NUMBER', 'default_callernumber')}\""
         buildConfigField "String", "TEST_SIP_DEST_NUMBER", "\"${properties.getProperty('TEST_SIP_DEST_NUMBER', 'default_dest_number')}\""
         buildConfigField "String", "PRECALL_DIAGNOSIS_NUMBER", "\"${properties.getProperty('PRECALL_DIAGNOSIS_NUMBER', 'default_precall_number')}\""
+
     }
     signingConfigs {
         debug {
@@ -73,8 +60,6 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -86,7 +71,7 @@ android {
     }
 
     composeOptions {
-    kotlinCompilerExtensionVersion = rootProject.ext.composeCompilerVersion
+        kotlinCompilerExtensionVersion = rootProject.ext.composeCompilerVersion
     }
 
     kotlinOptions {
@@ -100,9 +85,7 @@ android {
 }
 
 dependencies {
-    // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {
@@ -113,7 +96,6 @@ dependencies {
     implementation "androidx.core:core-ktx:1.13.1"
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "com.google.android.material:material:1.12.0"
-
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.8.0"
     implementation "androidx.activity:activity-compose:1.9.0"
     implementation platform("androidx.compose:compose-bom:2024.05.00")
@@ -125,7 +107,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:2.8.0"
     implementation "androidx.compose.runtime:runtime-livedata:1.6.7"
 
-    // Telnyx SDK module (local module)
+    // Telnyx SDK module
     implementation project(":telnyx_common")
 
     // Firebase & other libs
@@ -144,6 +126,4 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest"
 }
 
-
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
-
