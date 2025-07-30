@@ -1,4 +1,4 @@
-package package com.sipcallapp.ui.components
+package com.sipcallapp.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
