@@ -1,9 +1,12 @@
+// D:\TelnyxVer3\android\settings.gradle
 pluginManagement { 
     includeBuild("../node_modules/@react-native/gradle-plugin")
     repositories {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url 'https://maven.pkg.jetbrains.space/public/p/compose/dev' } // ✅ Quan trọng
+
     }
     plugins {
         id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"

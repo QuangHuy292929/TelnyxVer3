@@ -1,3 +1,6 @@
+//D:\TelnyxVer3\android\build.gradle
+
+
 buildscript {
     ext {
         buildToolsVersion = "35.0.0"
@@ -6,9 +9,11 @@ buildscript {
         targetSdkVersion = 35
         ndkVersion = "27.1.12297006"
         kotlinVersion = "2.1.20"
+         composeCompilerVersion = "2.0.0"
     }
 
     repositories {
+        gradlePluginPortal()
         google()
         mavenCentral()
         maven { url 'https://maven.pkg.jetbrains.space/public/p/compose/dev' }
@@ -20,11 +25,20 @@ buildscript {
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.20")
         classpath("org.jetbrains.kotlin:kotlin-serialization:2.1.20")
-        classpath("org.jetbrains.kotlin.compose:compose-gradle-plugin:1.5.11") // ✅ DÒNG QUAN TRỌNG
+classpath("org.jetbrains.compose:compose-gradle-plugin:1.5.12")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
         classpath("com.google.gms:google-services:4.4.0") // nếu bạn dùng Firebase
     }
 }
+
+// apply plugin: "com.facebook.react.rootproject"
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.1.20' apply false
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.1.20' apply false
+    id 'org.jetbrains.kotlin.android' version '2.1.20' apply false
+    id 'org.jetbrains.compose' version '1.5.12' apply false
+}
+
 
 allprojects {
     repositories {
@@ -33,5 +47,3 @@ allprojects {
         maven { url "https://jitpack.io" } // nếu có thư viện Telnyx hoặc GitHub
     }
 }
-
-apply plugin: "com.facebook.react.rootproject"
